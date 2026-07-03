@@ -165,3 +165,71 @@ V2 的語意聚類不是放棄 KG，而是：
 - fact group 與 KG community 的數學對應  
 - 為什麼 GNN 在 V2 中比 graph traversal 更有效  
 - 如何在 V2 中重建一個「顯式 KG」作為輔助索引
+
+
+
+## Draw a chart to present each section of fact extraction & it's data outline in mermaid, a hierachite chart is better
+
+```mermaid
+graph LR
+    A[Fact Extraction Pipeline]:::root
+
+    %% Sections
+    A --> B[Input TextUnit]:::sec
+    A --> C[LLM Fact Extraction]:::sec
+    A --> D[Fact Object Schema]:::sec
+    A --> E[Post-processing]:::sec
+
+    %% Input TextUnit
+    B --> B1[Raw Text Chunk]:::field
+    B --> B2[TextUnit ID]:::field
+    B --> B3[Source Doc Metadata]:::field
+
+    %% LLM Fact Extraction
+    C --> C1[Task Definition]:::field
+    C1 --> C1a["Extract atomic, quotable facts"]:::leaf
+    C1 --> C1b["No inference / no external knowledge"]:::leaf
+
+    C --> C2[Prompt Components]:::field
+    C2 --> C2a["Fact definition & rules"]:::leaf
+    C2 --> C2b["Output JSON schema"]:::leaf
+    C2 --> C2c["Examples (optional)"]:::leaf
+
+    C --> C3[LLM Output]:::field
+    C3 --> C3a[JSON Array of Facts]:::leaf
+
+    %% Fact Object Schema
+    D --> D1[fact_text]:::field
+    D1 --> D1a["Minimal, self-contained statement"]:::leaf
+
+    D --> D2["entities[]"]:::field
+    D2 --> D2a["name"]:::leaf
+    D2 --> D2b["type (person/org/location/...)"]:::leaf
+
+    D --> D3["relations[]"]:::field
+    D3 --> D3a["subject"]:::leaf
+    D3 --> D3b["predicate"]:::leaf
+    D3 --> D3c["object"]:::leaf
+
+    D --> D4[metadata]:::field
+    D4 --> D4a["source_textunit_id"]:::leaf
+    D4 --> D4b["span / position"]:::leaf
+    D4 --> D4c["confidence"]:::leaf
+    D4 --> D4d["extraction_notes"]:::leaf
+
+    %% Post-processing
+    E --> E1[ID Assignment]:::field
+    E1 --> E1a["fact_id generation"]:::leaf
+
+    E --> E2[Validation]:::field
+    E2 --> E2a["Schema conformity"]:::leaf
+    E2 --> E2b["No hallucinated content"]:::leaf
+
+    E --> E3[Storage]:::field
+    E3 --> E3a["Fact table / index"]:::leaf
+
+    classDef root fill:#222,color:#fff,stroke:#555,stroke-width:2;
+    classDef sec fill:#333,color:#fff,stroke:#777,stroke-width:1.5;
+    classDef field fill:#444,color:#fff,stroke:#999,stroke-width:1;
+    classDef leaf fill:#555,color:#eee,stroke:#999,stroke-width:0.5;
+```
